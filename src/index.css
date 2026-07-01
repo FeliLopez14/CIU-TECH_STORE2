@@ -1,17 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg: #efe7da;
+  --bg: #daefdd;
   --bg-muted: rgba(255, 252, 245, 0.74);
   --surface: rgba(255, 252, 245, 0.9);
   --surface-strong: #fffaf1;
   --surface-contrast: #1e1c1a;
   --text: #2f2721;
-  --text-soft: #6c6158;
+  --text-soft: #4a6b5d;          /* Un gris verdoso que acompaña re bien */
   --border: rgba(77, 62, 49, 0.14);
-  --accent: #a45b44;
-  --accent-strong: #7f3f2a;
-  --accent-soft: rgba(164, 91, 68, 0.12);
+  /* Reemplazá las líneas 12, 13 y 14 de tu index.css con esto: */
+  --accent: #1b4d3e;               /* Verde inglés clásico para botones principales */
+  --accent-strong: #0f3025;        /* Un tono más profundo para el hover (:hover) */
+  --accent-soft: rgba(27, 77, 62, 0.12); /* Versión sutil para botones secundarios o fondos */
   --success: #576d4e;
   --warning: #a26f22;
   --danger: #9b413a;
@@ -36,17 +37,18 @@
   --surface-strong: #2b2825;
   --surface-contrast: #f7f0e7;
   --text: #f1e7d9;
-  --text-soft: #b6ab9f;
-  --border: rgba(255, 241, 224, 0.12);
-  --accent: #d29d79;
-  --accent-strong: #efbc92;
+  --text-soft: #8da399;          /* Un gris verdoso claro que descansa la vista */
+  /* Reemplazá las líneas 41, 42 y 43 de tu index.css con esto: */
+  --accent: #2e6f5a;               /* Un verde inglés un toque más vivo para que destaque en el fondo oscuro */
+  --accent-strong: #3b8b71;        /* Un tono más claro y brillante para el hover (:hover) */
+  --accent-soft: rgba(46, 111, 90, 0.15); /* Fondo sutil para elementos secundarios */
   --accent-soft: rgba(210, 157, 121, 0.14);
   --success: #9ebb84;
   --warning: #d7ac66;
   --danger: #dd8c84;
   --shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
   background:
-    radial-gradient(circle at top left, rgba(134, 102, 78, 0.2), transparent 30%),
+    radial-gradient(circle at top left, rgba(46, 111, 90, 0.15), transparent 30%),
     linear-gradient(180deg, #1a1917 0%, #201f1d 42%, #141311 100%);
 }
 
