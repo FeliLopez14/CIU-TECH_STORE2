@@ -114,6 +114,7 @@ export function PostDetailPage() {
   return (
     <div className="detail-layout">
       <section className="detail-main">
+        {/* --- 1. TARJETA DEL POST (Exactamente igual a la tuya) --- */}
         <article className="detail-card">
           <div className="card-head">
             <div>
@@ -128,7 +129,7 @@ export function PostDetailPage() {
                   Editar publicación
                 </Link>
                 <button 
-                  className="danger-button" // Podés definir esta clase en tu CSS para ponerlo en rojo
+                  className="danger-button" 
                   onClick={handleDelete}
                   disabled={isDeleting}
                   style={{ cursor: 'pointer' }}
@@ -156,7 +157,7 @@ export function PostDetailPage() {
           ) : null}
         </article>
 
-        {/* ... El resto del componente de comentarios se mantiene exactamente igual ... */}
+        {/* --- 2. FORMULARIO DE COMENTARIOS (Exactamente igual al tuyo) --- */}
         <section className="composer">
           <div>
             <p className="eyebrow">Nuevo comentario</p>
@@ -182,31 +183,34 @@ export function PostDetailPage() {
             </div>
           </form>
         </section>
-      </section>
 
-      <aside className="panel">
-        <div>
-          <p className="eyebrow">Comentarios</p>
-        </div>
+        {/* 👇 ACÁ ESTÁ EL CAMBIO MAGICO 👇 */}
+        {/* --- 3. PANEL DE COMENTARIOS (Ahora está ADENTRO del detail-main) --- */}
+        <aside className="panel">
+          <div>
+            <p className="eyebrow">Comentarios</p>
+          </div>
 
-        {!comments.length ? (
-          <div className="empty-card">
-            <p className="empty-text">Este post todavía no tiene comentarios visibles.</p>
-          </div>
-        ) : (
-          <div className="comment-list">
-            {comments.map((comment) => (
-              <article key={comment.id} className="comment-card">
-                <div className="comment-head">
-                  <strong>@{comment.nickname || 'anonimo'}</strong>
-                  <span className="meta-text">Comentario</span>
-                </div>
-                <p className="body-copy">{comment.content}</p>
-              </article>
-            ))}
-          </div>
-        )}
-      </aside>
+          {!comments.length ? (
+            <div className="empty-card">
+              <p className="empty-text">Este post todavía no tiene comentarios visibles.</p>
+            </div>
+          ) : (
+            <ul className="comment-list"> {/* 👈 Acá cambié el div por ul */}
+              {comments.map((comment) => (
+                <li key={comment.id} className="comment-card"> {/* 👈 Acá cambié article por li */}
+                  <div className="comment-head">
+                    <strong>@{comment.nickname || 'anonimo'}</strong>
+                    <span className="meta-text">Comentario</span>
+                  </div>
+                  <p className="body-copy">{comment.content}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </aside>
+
+      </section> {/* 👈 Recién acá se cierra detail-main */}
     </div>
   )
 }
