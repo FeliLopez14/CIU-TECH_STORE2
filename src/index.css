@@ -988,7 +988,7 @@ img {
   
   }
   .post-list {
-    max-width: 520px;
+    max-width: 700px;
     margin: 0 auto;
   }
   .social-post-image {
@@ -1008,3 +1008,16 @@ img {
   }
 }
 
+.auth-theme-toggle {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+}
+
+@media (max-width: 640px) {
+  .auth-theme-toggle {
+    top: 16px;
+    right: 16px;
+  }
+}

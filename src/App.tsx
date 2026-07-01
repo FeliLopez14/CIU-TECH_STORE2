@@ -3,7 +3,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { FooterNav } from './components/FooterNav'
 import { ProtectedRoute } from './components/ProtectedRoute'
-// import { ThemeToggle } from './components/ThemeToggle'
+import { ThemeToggle } from './components/ThemeToggle'
 import { useAuth } from './hooks/useAuth'
 import { CreatePostPage } from './pages/CreatePostPage'
 import { HomePage } from './pages/HomePage'
@@ -19,7 +19,11 @@ function AppLayout() {
 
   return (
     <div className="app-shell">
-
+      {!currentUser ? (
+        <div className="auth-theme-toggle">
+          <ThemeToggle />
+        </div>
+      ) : null}
       <main className="page-frame">
         <Routes>
           <Route path="/" element={<Navigate to={currentUser ? '/feed' : '/login'} replace />} />

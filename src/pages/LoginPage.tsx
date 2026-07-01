@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { ThemeToggle } from '../components/ThemeToggle'
+// import { ThemeToggle } from '../components/ThemeToggle'
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -40,7 +40,6 @@ export function LoginPage() {
               <h1 className="hero-title">Menos filtro. Más publicación.</h1>
             </div>
             
-            <ThemeToggle />
           </div>
 
           <p className="hero-copy">
@@ -48,11 +47,6 @@ export function LoginPage() {
             estética más sobria, cálida y retro.
           </p>
 
-          {/* <div className="hero-chip-row">
-            <span className="hero-chip">Feed con detalle</span>
-            <span className="hero-chip">Comentarios visibles</span>
-            <span className="hero-chip">Likes y perfil propio</span>
-          </div> */}
 
           <div className="info-strip">
             <p className="eyebrow">Acceso simulado</p>
