@@ -450,9 +450,9 @@ img {
 
 .post-card-image,
 .detail-image {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 5; /* esta recortando verticalemnte la imagen*/
   width: 100%;
-  object-fit: cover;
+  object-fit: cover; /* esta recortando para rellenar*/
   border-radius: 20px;
   margin-bottom: 14px;
   background: linear-gradient(135deg, rgba(164, 91, 68, 0.18), rgba(87, 109, 78, 0.18));
@@ -795,12 +795,13 @@ img {
 
 .social-post-image {
   width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+  height: auto; /* <-- Agregá esto */
+  aspect-ratio: auto; /* <-- FUNDAMENTAL: anula el 4/5 de la otra clase */
+  object-fit: initial; /* <-- Anula el 'cover' de la otra clase */
   border-radius: 0;
   margin: 0;
   border-bottom: 1px solid var(--border);
-}
+} 
 
 .social-post-body {
   display: grid;
