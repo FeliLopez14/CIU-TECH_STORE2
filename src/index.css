@@ -510,8 +510,11 @@ img {
 }
 
 .detail-layout {
-  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
-  align-items: start;
+ display: flex;
+  flex-direction: column;
+  max-width: 650px; /* Esto evita que el posteo se estire por toda la pantalla en monitores grandes */
+  margin: 0 auto;   /* Esto es la magia que centra todo el bloque en la pantalla */
+  width: 100%;
 }
 
 .comment-list {
