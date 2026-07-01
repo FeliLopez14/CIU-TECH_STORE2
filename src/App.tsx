@@ -3,7 +3,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { FooterNav } from './components/FooterNav'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { ThemeToggle } from './components/ThemeToggle'
+// import { ThemeToggle } from './components/ThemeToggle'
 import { useAuth } from './hooks/useAuth'
 import { CreatePostPage } from './pages/CreatePostPage'
 import { HomePage } from './pages/HomePage'
@@ -12,21 +12,13 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { PostDetailPage } from './pages/PostDetailPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { RegisterPage } from './pages/RegisterPage'
+import { EditPostPage } from './pages/EditPostPage'
 
 function AppLayout() {
   const { currentUser } = useAuth()
 
   return (
     <div className="app-shell">
-      {currentUser ? (
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">Unahur ANti-social Net</p>
-            <h1 className="brand-title">Una red con menos pose y más barrio.</h1>
-          </div>
-          <ThemeToggle />
-        </header>
-      ) : null}
 
       <main className="page-frame">
         <Routes>
@@ -49,6 +41,14 @@ function AppLayout() {
             element={
               <ProtectedRoute>
                 <PostDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/post/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditPostPage />
               </ProtectedRoute>
             }
           />

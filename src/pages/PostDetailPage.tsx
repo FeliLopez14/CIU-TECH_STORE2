@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { createComment, fetchPostDetailById } from '../services/api'
 import type { Comment, Post } from '../types/social'
@@ -82,6 +82,11 @@ export function PostDetailPage() {
     )
   }
 
+  const isOwner =
+    currentUser &&
+    (post.userId === currentUser.id ||
+      post.nickname.toLowerCase() === currentUser.nickname.toLowerCase())
+
   return (
     <div className="detail-layout">
       <section className="detail-main">
@@ -91,10 +96,17 @@ export function PostDetailPage() {
               <p className="eyebrow">Detalle</p>
               <h2 className="section-title">@{post.nickname || 'sin-apodo'}</h2>
             </div>
-            <span className="meta-chip">{post.commentsCount} comentarios</span>
+
+            {isOwner ? (
+              <Link className="secondary-button" to={`/post/${post.id}/edit`}>
+                Editar publicación
+              </Link>
+            ) : null}
           </div>
 
-          {post.imageUrl ? <img className="detail-image" src={post.imageUrl} alt={post.description} /> : null}
+          {post.imageUrl ? (
+            <img className="detail-image" src={post.imageUrl} alt={post.description} />
+          ) : null}
 
           <p className="body-copy">{post.description}</p>
 
@@ -112,12 +124,10 @@ export function PostDetailPage() {
         <section className="composer">
           <div>
             <p className="eyebrow">Nuevo comentario</p>
-            <h3 className="card-title">Sumate a la conversación</h3>
           </div>
 
           <form className="form-grid" onSubmit={handleSubmit}>
             <div className="field">
-              <label htmlFor="comment-content">Comentario</label>
               <textarea
                 id="comment-content"
                 rows={4}
@@ -141,7 +151,6 @@ export function PostDetailPage() {
       <aside className="panel">
         <div>
           <p className="eyebrow">Comentarios</p>
-          <h3 className="card-title">Visibles en la API</h3>
         </div>
 
         {!comments.length ? (

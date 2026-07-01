@@ -1,4 +1,4 @@
-import type { Comment, CreatePostPayload, Post, User } from '../types/social'
+import type { Comment, CreatePostPayload, Post, User, PostImage, PostTag } from '../types/social'
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '/api').replace(/\/$/, '')
 
@@ -165,12 +165,66 @@ function readImageUrl(record: Record<string, unknown>) {
   return undefined
 }
 
+function readImageItems(record: Record<string, unknown>): PostImage[] {
+  const images = record.imagenes
+
+  if (!Array.isArray(images)) {
+    return []
+  }
+
+  return images
+    .map((image) => {
+      if (!image || typeof image !== 'object') {
+        return null
+      }
+
+      const imageRecord = image as Record<string, unknown>
+      const id = readString(imageRecord, ['_id', 'id'])
+      const url = normalizeAssetUrl(readString(imageRecord, ['url', 'imageUrl']))
+
+      if (!id || !url) {
+        return null
+      }
+
+      return { id, url }
+    })
+    .filter((image): image is PostImage => Boolean(image))
+}
+
+function readTagItems(record: Record<string, unknown>): PostTag[] {
+  const rawTags = record.etiquetas ?? record.tags ?? record.tagList
+
+  if (!Array.isArray(rawTags)) {
+    return []
+  }
+
+  return rawTags
+    .map((tag) => {
+      if (!tag || typeof tag !== 'object') {
+        return null
+      }
+
+      const tagRecord = tag as Record<string, unknown>
+      const id = readString(tagRecord, ['_id', 'id'])
+      const name = readString(tagRecord, ['nombre', 'name'])
+
+      if (!id || !name) {
+        return null
+      }
+
+      return { id, name }
+    })
+    .filter((tag): tag is PostTag => Boolean(tag))
+}
+
 function normalizeUser(raw: unknown): User {
   const record = (raw ?? {}) as Record<string, unknown>
 
   return {
     id: readString(record, ['_id', 'id', 'userId']),
     nickname: readString(record, ['nickName', 'nickname']),
+    seguidores: getCollection(record.seguidores).map(normalizeUser),
+    seguidos: getCollection(record.seguidos).map(normalizeUser),
   }
 }
 
@@ -186,7 +240,9 @@ function normalizePost(raw: unknown): Post {
       readString(record, ['nickName', 'nickname']) || readNestedString(nestedUser, ['nickName']),
     description: readString(record, ['descripcion', 'description', 'content']),
     imageUrl: readImageUrl(record),
+    imageItems: readImageItems(record),
     tags: readTags(record),
+    tagItems: readTagItems(record),
     likes: 0,
     commentsCount: getCollection(record.comentarios).length,
     createdAt: readString(record, ['fechaCreacion', 'createdAt']) || undefined,
@@ -288,9 +344,14 @@ export async function createComment(postId: string, content: string, user: User)
 export async function createPost(payload: CreatePostPayload, user: User) {
   const createdPostResponse = await apiRequest<unknown>('/posts', {
     method: 'POST',
-    body: JSON.stringify({ descripcion: payload.description, usuarioId: user.id }),
+    body: JSON.stringify({
+      descripcion: payload.description,
+      usuarioId: user.id,
+    }),
   })
 
+  
+  
   const createdPost = normalizePost({
     ...((createdPostResponse ?? {}) as Record<string, unknown>),
     usuarioId: { _id: user.id, nickName: user.nickname },
@@ -303,12 +364,75 @@ export async function createPost(payload: CreatePostPayload, user: User) {
     })
   }
 
-  if (payload.imageUrl) {
-    await apiRequest(`/posts/${createdPost.id}/imagenes`, {
+  for (const image of payload.images) {
+    const formData = new FormData()
+    formData.append('imagen', image)
+
+    const response = await fetch(getEndpoint(`/posts/${createdPost.id}/imagenes/upload`), {
       method: 'POST',
-      body: JSON.stringify({ url: payload.imageUrl }),
+      body: formData,
     })
+
+    if (!response.ok) {
+      throw new Error('No se pudo subir una de las imágenes.')
+    }
   }
 
   return fetchPostById(createdPost.id)
+}
+
+export async function updatePostDescription(postId: string, description: string) {
+  const response = await apiRequest<unknown>(`/posts/${postId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ descripcion: description }),
+  })
+
+  return normalizePost(response)
+}
+
+export async function deletePost(postId: string) {
+  await apiRequest(`/posts/${postId}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function addPostTag(postId: string, tagName: string) {
+  await apiRequest(`/posts/${postId}/etiquetas`, {
+    method: 'POST',
+    body: JSON.stringify({ nombre: tagName }),
+  })
+
+  return fetchPostById(postId)
+}
+
+export async function removePostTag(postId: string, tagId: string) {
+  await apiRequest(`/posts/${postId}/etiquetas/${tagId}`, {
+    method: 'DELETE',
+  })
+
+  return fetchPostById(postId)
+}
+
+export async function uploadPostImage(postId: string, image: File) {
+  const formData = new FormData()
+  formData.append('imagen', image)
+
+  const response = await fetch(getEndpoint(`/posts/${postId}/imagenes/upload`), {
+    method: 'POST',
+    body: formData,
+  })
+
+  if (!response.ok) {
+    throw new Error('No se pudo subir la imagen.')
+  }
+
+  return fetchPostById(postId)
+}
+
+export async function deletePostImage(postId: string, imageId: string) {
+  await apiRequest(`/posts/${postId}/imagenes/${imageId}`, {
+    method: 'DELETE',
+  })
+
+  return fetchPostById(postId)
 }

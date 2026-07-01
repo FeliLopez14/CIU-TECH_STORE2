@@ -3,6 +3,18 @@ export type ThemeMode = 'light' | 'dark'
 export interface User {
   id: string
   nickname: string
+  seguidores?: User[]
+  seguidos?: User[]
+}
+
+export interface PostImage {
+  id: string
+  url: string
+}
+
+export interface PostTag {
+  id: string
+  name: string
 }
 
 export interface Post {
@@ -11,7 +23,9 @@ export interface Post {
   nickname: string
   description: string
   imageUrl?: string
+  imageItems: PostImage[]
   tags: string[]
+  tagItems: PostTag[]
   likes: number
   commentsCount: number
   createdAt?: string
@@ -30,7 +44,7 @@ export interface Comment {
 
 export interface CreatePostPayload {
   description: string
-  imageUrl?: string
+  images: File[]
   tags: string[]
 }
 

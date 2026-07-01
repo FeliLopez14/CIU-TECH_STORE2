@@ -7,7 +7,7 @@ import type { Post } from '../types/social'
 
 export function ProfilePage() {
   const navigate = useNavigate()
-  const { currentUser, logout } = useAuth()
+  const { currentUser, fullUser, logout } = useAuth()
   const [posts, setPosts] = useState<Post[]>([])
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -68,18 +68,24 @@ export function ProfilePage() {
       <aside className="feed-side">
         <section className="panel">
           <p className="eyebrow">Perfil</p>
-          <h2 className="section-title">@{currentUser.nickname}</h2>
-          <p className="muted">Tus datos quedan guardados en contexto global y localStorage.</p>
+          <h2 className="section-title">{currentUser.nickname}</h2>
 
-          <div className="stat-grid">
-            <article className="stat-card">
-              <span className="eyebrow">Tus posts</span>
-              <p className="stat-value">{posts.length}</p>
-            </article>
-            <article className="stat-card">
-              <span className="eyebrow">Comentarios visibles</span>
-              <p className="stat-value">{posts.reduce((sum, post) => sum + post.commentsCount, 0)}</p>
-            </article>
+
+          <div className="profile-stats">
+            <div>
+              <span>{posts.length}</span>
+              <p>Posts</p>
+            </div>
+
+            <div>
+              <span>{fullUser?.seguidores?.length ?? 0}</span>
+              <p>Seguidores</p>
+            </div>
+
+            <div>
+              <span>{fullUser?.seguidos?.length ?? 0}</span>
+              <p>Seguidos</p>
+            </div>
           </div>
 
           <div className="profile-actions">

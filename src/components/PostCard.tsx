@@ -33,44 +33,51 @@ export function PostCard({ post, onLikeUpdated }: PostCardProps) {
   }
 
   return (
-    <article className="post-card">
-      <div className="card-head">
-        <div>
-          <p className="eyebrow">@{post.nickname || 'sin-apodo'}</p>
-          <h3 className="card-title">Post de la comunidad</h3>
+    <article className="post-card social-post-card">
+      <header className="social-post-header">
+        <div className="post-avatar">
+          {(post.nickname || '?').charAt(0).toUpperCase()}
         </div>
-        <span className="meta-chip">{post.commentsCount} comentarios</span>
-      </div>
+
+        <div>
+          <p className="post-author">@{post.nickname || 'sin-apodo'}</p>
+          <p className="post-subtitle">Buenos aires, Argentina</p>
+        </div>
+      </header>
 
       {post.imageUrl ? (
-        <img className="post-card-image" src={post.imageUrl} alt={post.description} />
+        <img className="post-card-image social-post-image" src={post.imageUrl} alt={post.description} />
       ) : null}
 
-      <p className="body-copy">{getExcerpt(post.description)}</p>
+      <div className="social-post-body">
+        <p className="body-copy">{getExcerpt(post.description)}</p>
 
-      {post.tags.length ? (
-        <div className="tag-row">
-          {post.tags.map((tag) => (
-            <span key={tag} className="tag-chip">
-              #{tag}
-            </span>
-          ))}
+        {post.tags.length ? (
+          <div className="tag-row">
+            {post.tags.map((tag) => (
+              <span key={tag} className="tag-chip">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="social-post-meta">
+          <button
+            type="button"
+            className={`like-button${liked ? ' is-liked' : ''}`}
+            onClick={handleLike}
+            disabled={liked}
+          >
+            {liked ? '♥' : '♡'} {likes}
+          </button>
+
+          {/* <span className="meta-text">{post.commentsCount} comentarios</span> */}
+
+          <Link className="post-more-link" to={`/post/${post.id}`}>
+            Ver más →
+          </Link>
         </div>
-      ) : null}
-
-      <div className="card-actions">
-        <button
-          type="button"
-          className={`like-button${liked ? ' is-liked' : ''}`}
-          onClick={handleLike}
-          disabled={liked}
-        >
-          {liked ? 'Te gusta' : 'Me gusta'} · {likes}
-        </button>
-
-        <Link className="primary-button" to={`/post/${post.id}`}>
-          Ver más
-        </Link>
       </div>
     </article>
   )
