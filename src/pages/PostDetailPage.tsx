@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom' // 👈 Agregamos useNavigate
 import { useAuth } from '../hooks/useAuth'
-import { createComment, fetchPostDetailById } from '../services/api'
+import { createComment, fetchPostDetailById, deletePost } from '../services/api' // 👈 Agregamos deletePostById
 import type { Comment, Post } from '../types/social'
 
 export function PostDetailPage() {
   const { id = '' } = useParams()
   const { currentUser } = useAuth()
+  const navigate = useNavigate() // 👈 Inicializamos el navegador
   const [post, setPost] = useState<Post | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [content, setContent] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false) // 👈 Estado para controlar la carga al eliminar
 
   useEffect(() => {
     async function loadPostDetail() {
@@ -66,6 +68,28 @@ export function PostDetailPage() {
     }
   }
 
+  // 👈 Nueva función para manejar la eliminación del posteo
+  async function handleDelete() {
+  const confirmDelete = window.confirm('¿Estás seguro de que querés eliminar esta publicación? Esta acción no se puede deshacer.')
+  if (!confirmDelete) return
+
+  setIsDeleting(true)
+  setError('')
+
+  try {
+    // 👇 Acá usamos la función que encontraste
+    await deletePost(id) 
+    navigate('/') // Te manda al inicio después de borrar
+  } catch (requestError) {
+    setError(
+      requestError instanceof Error
+        ? requestError.message
+        : 'No pudimos eliminar la publicación.',
+    )
+    setIsDeleting(false)
+  }
+}
+
   if (isLoading) {
     return <div className="loader">Cargando publicación...</div>
   }
@@ -97,10 +121,21 @@ export function PostDetailPage() {
               <h2 className="section-title">@{post.nickname || 'sin-apodo'}</h2>
             </div>
 
+            {/* 👇 Agrupamos los botones de acción para que queden alineados */}
             {isOwner ? (
-              <Link className="secondary-button" to={`/post/${post.id}/edit`}>
-                Editar publicación
-              </Link>
+              <div className="actions-group" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <Link className="secondary-button" to={`/post/${post.id}/edit`}>
+                  Editar publicación
+                </Link>
+                <button 
+                  className="danger-button" // Podés definir esta clase en tu CSS para ponerlo en rojo
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {isDeleting ? 'Eliminando...' : 'Eliminar'}
+                </button>
+              </div>
             ) : null}
           </div>
 
@@ -121,6 +156,7 @@ export function PostDetailPage() {
           ) : null}
         </article>
 
+        {/* ... El resto del componente de comentarios se mantiene exactamente igual ... */}
         <section className="composer">
           <div>
             <p className="eyebrow">Nuevo comentario</p>
