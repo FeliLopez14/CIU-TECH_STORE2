@@ -162,6 +162,12 @@ img {
   font-weight: 600;
   color: var(--text);
 }
+.feed-side .hero-title {
+  font-size: 2.2rem; 
+  max-width: none; 
+  overflow-wrap: break-word; 
+  line-height: 1.1;
+}
 
 .brand-title {
   font-size: clamp(1.5rem, 3.4vw, 2.2rem);
@@ -984,7 +990,7 @@ img {
   
   }
   .post-list {
-    max-width: 520px;
+    max-width: 700px;
     margin: 0 auto;
   }
   .social-post-image {
@@ -1004,3 +1010,16 @@ img {
   }
 }
 
+.auth-theme-toggle {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+}
+
+@media (max-width: 640px) {
+  .auth-theme-toggle {
+    top: 16px;
+    right: 16px;
+  }
+}

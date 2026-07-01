@@ -41,8 +41,8 @@ export function HomePage() {
       <aside className="feed-side">
         <section className="auth-hero">
           <div>
-            <p className="eyebrow">Inicio</p>
-            <h2 className="hero-title">El feed con onda retro de UNAHUR.</h2>
+            <p className="eyebrow"></p>
+            <h2 className="hero-title">El punto de encuentro digital en UNAHUR</h2>
           </div>
 
         </section>
