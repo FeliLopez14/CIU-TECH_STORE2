@@ -93,17 +93,19 @@ img {
 }
 
 .danger-button {
-  background-color: #dc3545; /* Rojo peligro */
-  color: white;
-  border: none;
+  background-color:var(--surface-strong); /* Fondo acorde al tema actual */
+  color: rgb(151, 149, 149); /*Tambien se podría poner como op2 del mismo color que el fondo, o un color oscuro como negro-ver*/
+  border: 1px solid var(--border); /* un borde sutil */;
   padding: 8px 16px;
   border-radius: 4px;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease; /* Suaviza el cambio de color */
 }
 
 .danger-button:hover {
-  background-color: #bd2130;
+  background-color: var(--danger); /* Rojo opaco/mate */
+  color: #fffaf1; /* Texto clarito para que contraste bien sobre el rojo */
+  border-color: var(--danger);
 }
 
 .danger-button:disabled {
@@ -844,42 +846,6 @@ img {
   background: var(--surface-strong);
 }
 
-.image-preview-card img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
-
-.image-preview-card button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-
-  width: 30px;
-  height: 30px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: none;
-  border-radius: 50%;
-
-  background: rgba(0, 0, 0, 0.65);
-  color: white;
-
-  font-size: 1rem;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: all .2s ease;
-}
-
-.image-preview-card button:hover {
-  background: #d32f2f;
-  transform: scale(1.08);
-}
 
 .file-button {
   width: fit-content;
@@ -908,15 +874,30 @@ img {
 
 .image-preview-card button {
   position: absolute;
+  top: 8px; /* op2 -> si no les gusta, cambiarlo a bottom: 8px ( otra ubicación-ver cómo queda) */
   right: 8px;
-  bottom: 8px;
-  border: 0;
-  border-radius: 999px;
-  padding: 6px 10px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 0.78rem;
-  font-weight: 800;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border); 
+  border-radius: 50%;
+  
+  background-color: var(--surface); /* Empieza con el color del fondo */
+  color: var(--text); 
+  
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.image-preview-card button:hover {
+  background-color: var(--danger); /* efecto para cambiar de color cuando pasa el mouse */
+  color: #fffaf1; /* la x se vuelve clara */
+  border-color: var(--danger);
+  transform: scale(1.08); /* un efectito de q crece un poco */
 }
 
 .character-counter {
