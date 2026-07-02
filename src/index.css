@@ -1061,3 +1061,48 @@ img {
     right: 16px;
   }
 }
+
+
+.user-search-panel {
+  gap: 16px;
+}
+
+.user-search-form {
+  display: grid;
+  gap: 10px;
+}
+
+.user-search-form input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-strong);
+  color: var(--text);
+  padding: 12px 14px;
+}
+
+.user-result-list {
+  display: grid;
+  gap: 10px;
+}
+
+.user-result-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-strong);
+}
+
+.user-result-card > div:last-child {
+  display: grid;
+  gap: 4px;
+}
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

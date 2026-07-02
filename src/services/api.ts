@@ -274,6 +274,11 @@ export async function fetchUsers() {
   return getCollection(response).map(normalizeUser).filter((user) => user.id && user.nickname)
 }
 
+export async function fetchUserById(id: string) {
+  const response = await apiRequest<unknown>(`/usuarios/${id}`)
+  return normalizeUser(response)
+}
+
 export async function createUser(nickname: string) {
   const response = await apiRequest<unknown>('/usuarios', {
     method: 'POST',
@@ -435,4 +440,22 @@ export async function deletePostImage(postId: string, imageId: string) {
   })
 
   return fetchPostById(postId)
+}
+
+export async function followUser(seguidorId: string, seguidoId: string) {
+  await apiRequest('/usuarios/seguir', {
+    method: 'POST',
+    body: JSON.stringify({ seguidorId, seguidoId }),
+  })
+
+  return fetchUserById(seguidoId)
+}
+
+export async function unfollowUser(seguidorId: string, seguidoId: string) {
+  await apiRequest('/usuarios/dejar-seguir', {
+    method: 'POST',
+    body: JSON.stringify({ seguidorId, seguidoId }),
+  })
+
+  return fetchUserById(seguidoId)
 }

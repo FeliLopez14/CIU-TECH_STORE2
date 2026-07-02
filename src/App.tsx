@@ -65,6 +65,14 @@ function AppLayout() {
             }
           />
           <Route
+            path="/profile/:id"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/create"
             element={
               <ProtectedRoute>

@@ -3,6 +3,7 @@ import { PostCard } from '../components/PostCard'
 import { useAuth } from '../hooks/useAuth'
 import { fetchFeed } from '../services/api'
 import type { Post } from '../types/social'
+import { UserSearchPanel } from '../components/UserSearchPanel'
 
 export function HomePage() {
   const { currentUser } = useAuth()
@@ -39,14 +40,7 @@ export function HomePage() {
   return (
     <div className="feed-layout">
       <aside className="feed-side">
-        <section className="auth-hero">
-          <div>
-            <p className="eyebrow"></p>
-            <h2 className="hero-title">El punto de encuentro digital en UNAHUR</h2>
-          </div>
-
-        </section>
-
+        <UserSearchPanel />
       </aside>
 
       <section className="feed-main">
