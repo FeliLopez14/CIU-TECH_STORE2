@@ -140,6 +140,7 @@ import { useMemo, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { createPost } from '../services/api'
+import { ArrowLeft } from 'lucide-react'
 
 const MAX_DESCRIPTION_LENGTH = 500
 
@@ -153,6 +154,11 @@ export function CreatePostPage() {
   const [tags, setTags] = useState<string[]>([])
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Fc para volver a la pag anterior
+  const handleVolver = () => {
+    navigate(-1)
+  }
 
   const imagePreviews = useMemo(
     () =>
@@ -217,14 +223,18 @@ export function CreatePostPage() {
   }
 
   return (
-    <section className="composer create-post-layout"> {/*agregue clase para q quede mas centrado y compacto*/}
-      <div>
-        <p className="eyebrow">Crear publicación</p>
-        <h2 className="section-title">¿Qué querés compartir?</h2>
-        {/* <p className="muted">
-          Escribí una descripción, agregá imágenes si querés y sumá etiquetas separadas por coma.
-        </p> */}
+    <section className="composer create-post-layout">
+      {/* 👇 NUEVO ENCABEZADO CON LA FLECHA 👇 */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+        <button type="button" className="back-button" onClick={handleVolver} title="Volver">
+          <ArrowLeft size={20} />
+        </button>
+        <div>
+          <p className="eyebrow">Crear publicación</p>
+          <h2 className="section-title">¿Qué querés compartir?</h2>
+        </div>
       </div>
+      {/* 👆 FIN DEL ENCABEZADO 👆 */}
 
       <form className="form-grid" onSubmit={handleSubmit}>
         <div className="field">

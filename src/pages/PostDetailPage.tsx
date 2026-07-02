@@ -1,27 +1,27 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams, useNavigate } from 'react-router-dom' // 👈 Agregamos useNavigate
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import { createComment, fetchPostDetailById, deletePost, deleteComment } from '../services/api' // 👈 Agregamos deletePostById
+import { createComment, fetchPostDetailById, deletePost, deleteComment } from '../services/api' 
 import type { Comment, Post } from '../types/social'
+import { ArrowLeft } from 'lucide-react'
 
 export function PostDetailPage() {
-
   const { id = '' } = useParams()
   const { currentUser } = useAuth()
-  const navigate = useNavigate() // 👈 Inicializamos el navegador
+  const navigate = useNavigate()
+
   const [post, setPost] = useState<Post | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const [content, setContent] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false) // 👈 Estado para controlar la carga al eliminar
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     async function loadPostDetail() {
       setIsLoading(true)
       setError('')
-
       try {
         const { post: postResponse, comments: commentsResponse } = await fetchPostDetailById(id)
         setPost({ ...postResponse, commentsCount: commentsResponse.length })
@@ -36,7 +36,6 @@ export function PostDetailPage() {
         setIsLoading(false)
       }
     }
-
     void loadPostDetail()
   }, [id])
 
@@ -69,28 +68,35 @@ export function PostDetailPage() {
     }
   }
   
-  // función para manejar la eliminación del posteo
   async function handleDelete() {
-  const confirmDelete = window.confirm('¿Estás seguro de que querés eliminar esta publicación? Esta acción no se puede deshacer.')
-  if (!confirmDelete) return
+    const confirmDelete = window.confirm('¿Estás seguro de que querés eliminar esta publicación? Esta acción no se puede deshacer.')
+    if (!confirmDelete) return
 
-  setIsDeleting(true)
-  setError('')
+    setIsDeleting(true)
+    setError('')
 
-  try {
-    // 👇 Acá usamos la función que encontraste
-    await deletePost(id) 
-    navigate('/') // Te manda al inicio después de borrar
-  } catch (requestError) {
-    setError(
-      requestError instanceof Error
-        ? requestError.message
-        : 'No pudimos eliminar la publicación.',
-    )
-    setIsDeleting(false)
+    try {
+      await deletePost(id) 
+      navigate('/') 
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : 'No pudimos eliminar la publicación.',
+      )
+      setIsDeleting(false)
+    }
   }
-}
-// funcion para la eliminacion de comentarios
+
+  // Función para volver al perfil asegurando que 'post' no sea null
+  const handleVolver = () => {
+    if (post && post.userId) {
+      navigate(`/profile/${post.userId}`);
+    } else {
+      navigate(-1);
+    }
+  };
+
   async function handleDeleteComment(commentId: string) {
     const confirmDelete = window.confirm('¿Estás seguro de que querés eliminar este comentario? Esta acción no se puede deshacer.')
     if (!confirmDelete) return    
@@ -109,13 +115,8 @@ export function PostDetailPage() {
           : 'No pudimos eliminar el comentario.',
       )
     }
-    return (
-    <div className="detail-layout">
-       {/* Acá va todo el cód con las etiquetas de HTML/JSX */}
-    </div>
-    )
   }
-//pequeños returns de control para mostrar mensajes de carga, error o post inexistente
+
   if (isLoading) {
     return <div className="loader">Cargando publicación...</div>
   }
@@ -142,9 +143,16 @@ export function PostDetailPage() {
       <section className="detail-main">
         <article className="detail-card">
           <div className="card-head">
-            <div>
-              <p className="eyebrow">Detalle</p>
-              <h2 className="section-title">@{post.nickname || 'sin-apodo'}</h2>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button className="back-button" onClick={handleVolver} title="Volver">
+                <ArrowLeft size={20} />
+              </button>
+
+              <div>
+                <p className="meta-text"> Publicado por</p>
+                <h2 className="section-title">@{post.nickname || 'sin-apodo'}</h2>
+              </div>
             </div>
 
             {isOwner ? (
@@ -226,8 +234,6 @@ export function PostDetailPage() {
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                       <span className="meta-text">Comentario</span>
                       
-                      {/* boton de eliminar en la interface */}
-                      {/* verifica si el usuario logueado coincide con el autor del comentario */}
                       {currentUser?.id === comment.userId && (
                         <button 
                           type="button"
@@ -239,7 +245,6 @@ export function PostDetailPage() {
                         </button>
                       )}
                     </div>
-
                   </div>
                   <p className="body-copy">{comment.content}</p>
                 </li>
