@@ -6,6 +6,15 @@ Unahur ANti-social Net es el frontend del trabajo práctico de una red social in
 
 El alcance de este repositorio es la capa de presentación. Toda la persistencia de datos, la lógica de negocio y los endpoints REST residen en el backend asociado.
 
+## Integrantes
+
+- Comisión: 2
+- Felipe López
+- Martín Maldonado
+- Luis Sebastián Alderete Cuello
+- Magalí Gutierrez
+- Ary Albarracín
+
 ## Objetivo del proyecto
 
 El objetivo de este trabajo es construir una interfaz web que permita a las personas usuarias interactuar con la API provista por la cátedra o por el equipo de backend, resolviendo los siguientes casos de uso:
