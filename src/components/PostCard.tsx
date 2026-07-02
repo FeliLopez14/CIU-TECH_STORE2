@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getPostLikes, hasLikedPost, registerPostLike } from '../services/likes'
+import { getPostLikes, hasLikedPost, registerPostLike, removePostLike } from '../services/likes'
+import { useAuth } from '../hooks/useAuth'
+
 import type { Post } from '../types/social'
 
 interface PostCardProps {
@@ -17,18 +19,35 @@ function getExcerpt(text: string) {
 }
 
 export function PostCard({ post, onLikeUpdated }: PostCardProps) {
+  // 1. Traemos al usuario actual logueado
+  const { currentUser } = useAuth()
+  // Usamos un fallback vacío "" por si acaso currentUser tarda en cargar
+  const currentUserId = currentUser?.id || ""
+
+  // 2. Le pasamos el id del usuario a los estados iniciales
+  // getPostLikes ya no lleva el id del usuario, usa el total global de la app
   const [likes, setLikes] = useState(() => getPostLikes(post.id, post.likes))
-  const [liked, setLiked] = useState(() => hasLikedPost(post.id))
+  // hasLikedPost SÍ lleva el id del usuario para saber si este usuario pintó el corazón
+  const [liked, setLiked] = useState(() => hasLikedPost(post.id, currentUserId))
 
   function handleLike() {
     if (liked) {
-      return
+      const nextLikes = likes - 1
+      setLikes(nextLikes)
+      setLiked(false)
+      
+      // Le pasamos el currentUserId a la función de borrado
+      removePostLike(post.id, currentUserId, nextLikes)
+      onLikeUpdated?.({ ...post, likes: nextLikes })
+      return 
     }
 
     const nextLikes = likes + 1
     setLikes(nextLikes)
     setLiked(true)
-    registerPostLike(post.id, nextLikes)
+    
+    // Le pasamos el currentUserId a la función de guardado
+    registerPostLike(post.id, currentUserId, nextLikes)
     onLikeUpdated?.({ ...post, likes: nextLikes })
   }
 
@@ -67,7 +86,6 @@ export function PostCard({ post, onLikeUpdated }: PostCardProps) {
             type="button"
             className={`like-button${liked ? ' is-liked' : ''}`}
             onClick={handleLike}
-            disabled={liked}
           >
             {liked ? '♥' : '♡'} {likes}
           </button>
