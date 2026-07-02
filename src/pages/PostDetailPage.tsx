@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom' // 👈 Agregamos useNavigate
 import { useAuth } from '../hooks/useAuth'
-import { createComment, fetchPostDetailById, deletePost } from '../services/api' // 👈 Agregamos deletePostById
+import { createComment, fetchPostDetailById, deletePost, deleteComment } from '../services/api' // 👈 Agregamos deletePostById
 import type { Comment, Post } from '../types/social'
 
 export function PostDetailPage() {
+
   const { id = '' } = useParams()
   const { currentUser } = useAuth()
   const navigate = useNavigate() // 👈 Inicializamos el navegador
@@ -67,8 +68,8 @@ export function PostDetailPage() {
       setIsSubmitting(false)
     }
   }
-
-  // 👈 Nueva función para manejar la eliminación del posteo
+  
+  // función para manejar la eliminación del posteo
   async function handleDelete() {
   const confirmDelete = window.confirm('¿Estás seguro de que querés eliminar esta publicación? Esta acción no se puede deshacer.')
   if (!confirmDelete) return
@@ -89,7 +90,32 @@ export function PostDetailPage() {
     setIsDeleting(false)
   }
 }
+// funcion para la eliminacion de comentarios
+  async function handleDeleteComment(commentId: string) {
+    const confirmDelete = window.confirm('¿Estás seguro de que querés eliminar este comentario? Esta acción no se puede deshacer.')
+    if (!confirmDelete) return    
 
+    try {
+      await deleteComment(commentId)
+      
+      setComments((currentComments) => currentComments.filter((c) => c.id !== commentId))
+      setPost((currentPost) =>
+        currentPost ? { ...currentPost, commentsCount: currentPost.commentsCount - 1 } : currentPost,
+      )
+    } catch (requestError) {
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : 'No pudimos eliminar el comentario.',
+      )
+    }
+    return (
+    <div className="detail-layout">
+       {/* Acá va todo el cód con las etiquetas de HTML/JSX */}
+    </div>
+    )
+  }
+//pequeños returns de control para mostrar mensajes de carga, error o post inexistente
   if (isLoading) {
     return <div className="loader">Cargando publicación...</div>
   }
@@ -114,7 +140,6 @@ export function PostDetailPage() {
   return (
     <div className="detail-layout">
       <section className="detail-main">
-        {/* --- 1. TARJETA DEL POST (Exactamente igual a la tuya) --- */}
         <article className="detail-card">
           <div className="card-head">
             <div>
@@ -122,7 +147,6 @@ export function PostDetailPage() {
               <h2 className="section-title">@{post.nickname || 'sin-apodo'}</h2>
             </div>
 
-            {/* 👇 Agrupamos los botones de acción para que queden alineados */}
             {isOwner ? (
               <div className="actions-group" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <Link className="secondary-button" to={`/post/${post.id}/edit`}>
@@ -157,7 +181,6 @@ export function PostDetailPage() {
           ) : null}
         </article>
 
-        {/* --- 2. FORMULARIO DE COMENTARIOS (Exactamente igual al tuyo) --- */}
         <section className="composer">
           <div>
             <p className="eyebrow">Nuevo comentario</p>
@@ -184,8 +207,6 @@ export function PostDetailPage() {
           </form>
         </section>
 
-        {/* 👇 ACÁ ESTÁ EL CAMBIO MAGICO 👇 */}
-        {/* --- 3. PANEL DE COMENTARIOS (Ahora está ADENTRO del detail-main) --- */}
         <aside className="panel">
           <div>
             <p className="eyebrow">Comentarios</p>
@@ -196,12 +217,29 @@ export function PostDetailPage() {
               <p className="empty-text">Este post todavía no tiene comentarios visibles.</p>
             </div>
           ) : (
-            <ul className="comment-list"> {/* 👈 Acá cambié el div por ul */}
+            <ul className="comment-list">
               {comments.map((comment) => (
-                <li key={comment.id} className="comment-card"> {/* 👈 Acá cambié article por li */}
+                <li key={comment.id} className="comment-card">
                   <div className="comment-head">
                     <strong>@{comment.nickname || 'anonimo'}</strong>
-                    <span className="meta-text">Comentario</span>
+                    
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <span className="meta-text">Comentario</span>
+                      
+                      {/* boton de eliminar en la interface */}
+                      {/* verifica si el usuario logueado coincide con el autor del comentario */}
+                      {currentUser?.id === comment.userId && (
+                        <button 
+                          type="button"
+                          className="danger-button" 
+                          style={{ padding: '4px 8px', fontSize: '0.8rem', cursor: 'pointer' }}
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          X
+                        </button>
+                      )}
+                    </div>
+
                   </div>
                   <p className="body-copy">{comment.content}</p>
                 </li>
@@ -210,7 +248,7 @@ export function PostDetailPage() {
           )}
         </aside>
 
-      </section> {/* 👈 Recién acá se cierra detail-main */}
+      </section>
     </div>
   )
 }

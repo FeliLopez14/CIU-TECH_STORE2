@@ -346,6 +346,12 @@ export async function createComment(postId: string, content: string, user: User)
   })
 }
 
+export async function deleteComment(commentId: string) {
+  await apiRequest(`/comentarios/${commentId}`, {
+    method: 'DELETE',
+  })
+}
+
 export async function createPost(payload: CreatePostPayload, user: User) {
   const createdPostResponse = await apiRequest<unknown>('/posts', {
     method: 'POST',
