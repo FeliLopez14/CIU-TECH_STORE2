@@ -1087,3 +1087,11 @@ img {
   padding: 0;
   margin: 0;
 }
+
+/*centralizado y compacto el crear post */
+
+.create-post-layout {
+  max-width: 650px; /* Le damos el mismo ancho máximo que al detalle del posteo */
+  width: 100%;
+  margin: 0 auto;   /* Esto centra el contenedor en la pantalla */
+}

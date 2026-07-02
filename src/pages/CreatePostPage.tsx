@@ -217,10 +217,10 @@ export function CreatePostPage() {
   }
 
   return (
-    <section className="composer">
+    <section className="composer create-post-layout"> {/*agregue clase para q quede mas centrado y compacto*/}
       <div>
         <p className="eyebrow">Crear publicación</p>
-        <h2 className="section-title">¿Qué querés compartir hoy?</h2>
+        <h2 className="section-title">¿Qué querés compartir?</h2>
         {/* <p className="muted">
           Escribí una descripción, agregá imágenes si querés y sumá etiquetas separadas por coma.
         </p> */}
