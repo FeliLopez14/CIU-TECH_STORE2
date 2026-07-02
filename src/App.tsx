@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { FooterNav } from './components/FooterNav'
@@ -16,6 +16,12 @@ import { EditPostPage } from './pages/EditPostPage'
 
 function AppLayout() {
   const { currentUser } = useAuth()
+  
+  // 1. Obtenemos la ruta actual
+  const location = useLocation()
+  
+  // 2. Ocultamos el footer al Crear, al ver el Detalle y al Editar
+  const ocultarFooter = location.pathname === '/create' || location.pathname.includes('/post/')
 
   return (
     <div className="app-shell">
@@ -84,7 +90,8 @@ function AppLayout() {
         </Routes>
       </main>
 
-      {currentUser ? <FooterNav /> : null}
+      {/* 3. El footer solo se renderiza si hay usuario y la ruta NO es de creación ni de posts */}
+      {currentUser && !ocultarFooter ? <FooterNav /> : null}
     </div>
   )
 }

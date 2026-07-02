@@ -112,6 +112,39 @@ img {
   background-color: #e4606d;
   cursor: not-allowed;
 }
+/*estilo para la flechita que vuelve*/
+
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Tamaño */
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  /* Borde y Sombras */
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow); 
+  /* Colores */
+  background-color: var(--surface-strong); /* Fondo */
+  color: var(--text);
+   /* Interacciones */
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+.back-button:hover {
+  
+  background-color: var(--accent-soft); /*color verde por si quieren cmabiarlo*/
+  color: var(--accent-strong); 
+  /* animacion de movimiento sutil para dar sensación de profundidad */
+  transform: translateX(-3px) translateY(-1px);
+}
+.back-button svg {
+  display: block; /*sin  margenes */
+}
+
+
 .app-shell {
   width: min(100%, 980px);
   min-height: 100vh;
