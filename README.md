@@ -2,9 +2,9 @@
 
 ## Descripción general
 
-Unahur ANti-social Net es el frontend del trabajo práctico de una red social inspirada en Instagram, desarrollado con React y TypeScript. La aplicación consume una API REST construida con Express y MongoDB, y permite registrar usuarios, iniciar sesión mediante un login simulado, navegar un feed de publicaciones, crear posteos, comentar y visualizar el perfil del usuario activo.
+Unahur ANti-social Net es el frontend del trabajo práctico de una red social inspirada en Instagram. La aplicación está desarrollada con React, TypeScript y Vite, y consume una API REST provista por un backend en Express y MongoDB.
 
-Este repositorio corresponde exclusivamente a la capa de presentación. La persistencia de datos, la lógica de negocio y los endpoints REST se encuentran implementados en el backend asociado.
+El alcance de este repositorio es la capa de presentación. Toda la persistencia de datos, la lógica de negocio y los endpoints REST residen en el backend asociado.
 
 ## Objetivo del proyecto
 
@@ -23,22 +23,26 @@ El objetivo de este trabajo es construir una interfaz web que permita a las pers
 
 La aplicación implementa las siguientes funcionalidades:
 
-- login simulado con `nickName` y contraseña fija `123456`
-- persistencia del usuario autenticado con `useContext` y `localStorage`
+- registro de usuario por `nickName`
+- inicio de sesión simulado con contraseña fija `123456`
+- persistencia de sesión con `useContext` y `localStorage`
 - rutas protegidas para las vistas privadas
-- consumo del feed personalizado de usuarios seguidos
-- creación de publicaciones con descripción, etiquetas e imagen por URL
-- creación de comentarios sobre publicaciones existentes
-- vista de perfil del usuario actual
-- cambio de tema claro / oscuro
+- feed personalizado según los usuarios seguidos
+- visualización del detalle de una publicación
+- creación de publicaciones con descripción, etiquetas e imágenes
+- edición y eliminación de publicaciones propias
+- creación y eliminación de comentarios
+- seguimiento y desbloqueo de usuarios desde el perfil
+- vista de perfil propio y de otros usuarios
+- cambio de tema visual claro / oscuro
 - simulación local de likes en `localStorage`
 
 ## Arquitectura de la solución
 
 La solución está dividida en dos proyectos:
 
-- frontend: `C:\Users\le_ma\Desktop\TP2 CIU`
-- backend: `C:\Users\le_ma\Desktop\TP2 EP\anti-social-documental-tp-unahur-data-systems`
+- frontend: https://github.com/FeliLopez14/CIU-TECH_STORE2
+- backend: https://github.com/EP-UnaHur-2026C1/anti-social-documental-tp-unahur-data-systems.git
 
 ### Stack tecnológico
 
@@ -86,39 +90,20 @@ TIEMPO_MAX_COMENTARIO=6
 
 ## Procedimiento de ejecución
 
-### 1. Levantar el backend
+### 1. Clonar y preparar el backend
 
-Abrir una terminal en la carpeta del backend:
+Repositorio del backend:
 
-```powershell
-Set-Location "C:\Users\le_ma\Desktop\TP2 EP\anti-social-documental-tp-unahur-data-systems"
-```
+- https://github.com/EP-UnaHur-2026C1/anti-social-documental-tp-unahur-data-systems.git
 
-Instalar dependencias:
+Pasos recomendados:
 
-```powershell
-npm install
-```
+1. abrir una terminal en la carpeta del backend
+2. instalar dependencias con `npm install`
+3. levantar MongoDB con `docker compose up -d`
+4. iniciar la API con `npm run dev`
 
-Levantar MongoDB con Docker Compose:
-
-```powershell
-docker compose up -d
-```
-
-Opcionalmente, verificar el estado del contenedor:
-
-```powershell
-docker compose ps
-```
-
-Iniciar la API:
-
-```powershell
-npm run dev
-```
-
-Si no existe un archivo `.env` configurado en el backend, también puede iniciarse de forma manual con variables temporales de PowerShell:
+Si el backend no tiene un archivo `.env`, también puede iniciarse con variables temporales de PowerShell:
 
 ```powershell
 $env:PORT='3050'
@@ -130,27 +115,21 @@ npm run dev
 Verificación sugerida:
 
 - Swagger: `http://localhost:3050/api-docs`
-- Endpoint de usuarios: `http://localhost:3050/api/usuarios`
+- Usuarios: `http://localhost:3050/api/usuarios`
+- Feed: `http://localhost:3050/api/usuarios/:id/feed`
 
-### 2. Levantar el frontend
+### 2. Clonar y preparar el frontend
 
-Abrir una segunda terminal en la carpeta del frontend:
+Repositorio del frontend:
 
-```powershell
-Set-Location "C:\Users\le_ma\Desktop\TP2 CIU"
-```
+- https://github.com/FeliLopez14/CIU-TECH_STORE2
 
-Instalar dependencias:
+Pasos recomendados:
 
-```powershell
-npm install
-```
-
-Iniciar el servidor de desarrollo:
-
-```powershell
-npm run dev
-```
+1. abrir una terminal en la carpeta del frontend
+2. instalar dependencias con `npm install`
+3. crear o verificar el archivo `.env`
+4. iniciar el servidor de desarrollo con `npm run dev`
 
 Abrir la aplicación en el navegador:
 
@@ -161,7 +140,7 @@ Abrir la aplicación en el navegador:
 Para una ejecución correcta, se recomienda seguir esta secuencia:
 
 1. abrir Docker Desktop
-2. levantar MongoDB desde el backend con `docker compose up -d`
+2. levantar MongoDB con `docker compose up -d`
 3. iniciar la API con `npm run dev`
 4. iniciar el frontend con `npm run dev`
 5. abrir `http://127.0.0.1:5173/`
@@ -181,26 +160,35 @@ Usuarios creados durante la verificación funcional:
 
 ## Flujo de navegación esperado
 
-1. la persona usuaria ingresa o se registra
-2. luego del login se redirige al feed
+1. la persona usuaria se registra o inicia sesión con un `nickName` válido
+2. al autenticarse se redirige al feed
 3. desde el feed puede abrir el detalle de una publicación
-4. desde el menú inferior puede navegar al perfil o crear un nuevo post
-5. desde el detalle puede agregar comentarios
+4. desde el detalle puede comentar, eliminar comentarios propios, editar o eliminar la publicación si es autora
+5. desde el menú inferior puede navegar al perfil, crear una publicación o cambiar el tema visual
+6. desde el perfil puede seguir o dejar de seguir a otros usuarios y revisar sus publicaciones
 
 ## Endpoints utilizados por el frontend
 
 La interfaz fue adaptada al contrato real del backend y utiliza los siguientes endpoints:
 
 - `GET /api/usuarios`
+- `GET /api/usuarios/:id`
 - `POST /api/usuarios`
+- `POST /api/usuarios/seguir`
+- `POST /api/usuarios/dejar-seguir`
 - `GET /api/usuarios/:id/feed`
 - `GET /api/posts`
 - `GET /api/posts/:postId`
 - `POST /api/posts`
+- `PUT /api/posts/:postId`
+- `DELETE /api/posts/:postId`
 - `POST /api/posts/:postId/etiquetas`
-- `POST /api/posts/:postId/imagenes`
+- `DELETE /api/posts/:postId/etiquetas/:tagId`
+- `POST /api/posts/:postId/imagenes/upload`
+- `DELETE /api/posts/:postId/imagenes/:imageId`
 - `GET /api/comentarios`
 - `POST /api/posts/:postId/comentarios`
+- `DELETE /api/comentarios/:commentId`
 
 ## Comandos útiles
 
@@ -225,11 +213,18 @@ docker compose down
 Durante la validación del sistema se comprobó correctamente:
 
 - inicio de sesión simulado
+- registro de nuevos usuarios
 - carga del feed desde la API
-- creación de publicaciones
-- creación de comentarios
+- creación, edición y eliminación de publicaciones
+- creación y eliminación de comentarios
+- seguimiento y desbloqueo de usuarios
 - navegación entre vistas
 - funcionamiento del frontend con el backend real
+
+La validación local del frontend también pasó con éxito:
+
+- `npm run build`
+- `npm run lint`
 
 ## Problemas comunes
 

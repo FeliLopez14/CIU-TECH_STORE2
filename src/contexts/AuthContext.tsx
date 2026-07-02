@@ -160,7 +160,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [currentUser])
 
   useEffect(() => {
-    refreshFullUser()
+    void Promise.resolve().then(() => refreshFullUser())
   }, [refreshFullUser])
 
   const value = useMemo<AuthContextValue>(
